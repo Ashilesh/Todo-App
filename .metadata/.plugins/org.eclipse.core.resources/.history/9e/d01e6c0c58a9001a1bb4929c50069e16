@@ -1,0 +1,5 @@
+package io.sonkusle.TodoApp.Entity;
+
+public class User {
+
+}

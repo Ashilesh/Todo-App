@@ -1,0 +1,9 @@
+package io.sonkusle.TodoApp.repository;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import io.sonkusle.TodoApp.models.Todo;
+
+public interface TodoRepo extends JpaRepository<Todo, Long>{
+
+}

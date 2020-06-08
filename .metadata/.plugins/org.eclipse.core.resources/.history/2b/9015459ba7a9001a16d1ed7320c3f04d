@@ -1,0 +1,16 @@
+package io.sonkusle.TodoApp.repository;
+
+import java.util.List;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+
+import io.sonkusle.TodoApp.models.Todo;
+
+public interface TodoRepo extends JpaRepository<Todo, Long>{
+	
+	@Query(value = "SELECT id, desc, is_complete, title, user_id FROM TODO WHERE user_Id =:user_id AND id =:id " , nativeQuery = false)
+	public Todo findTodo(@Param("user_id") int user_id, @Param("id") Long id);
+
+}
