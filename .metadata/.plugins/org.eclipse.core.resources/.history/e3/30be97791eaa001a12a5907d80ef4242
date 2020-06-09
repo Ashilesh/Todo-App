@@ -1,0 +1,21 @@
+package io.sonkusle.TodoApp.repository;
+
+import java.util.List;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+
+import io.sonkusle.TodoApp.models.Todo;
+
+public interface TodoRepo extends JpaRepository<Todo, Long>{
+	
+	public List<Todo> findByUserId(int userId);
+	
+	@Modifying(clearAutomatically = true, flushAutomatically = true)
+	@Query("update Todo t set t.isComplete = false where t.userId =:userId")
+	public void changeComplete( @Param("userId") int userId);
+	
+	
+}

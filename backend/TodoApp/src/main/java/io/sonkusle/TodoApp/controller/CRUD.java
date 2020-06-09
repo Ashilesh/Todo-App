@@ -3,14 +3,17 @@ package io.sonkusle.TodoApp.controller;
 import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.sonkusle.TodoApp.models.Todo;
@@ -27,16 +30,22 @@ public class CRUD {
 		return "Hello World!";
 	}
 
-	// get all todos for all user
-	// change implementation
-	@GetMapping("/Todo")
-	public List<Todo> getAllTodos() {
-		return todoRepo.findAll();
+	/*
+	 * get all todos for specifc user
+	 */
+	@GetMapping("/Todo/{userId}")
+	public List<Todo> getAllTodos(@PathVariable(name = "userId") int userId) {
+		return todoRepo.findByUserId(userId);
 	}
 	
-	@PostMapping("/Todo")
-	public Todo addTodo(@RequestBody Todo todo, HttpServletResponse response) {
+	
+	/*
+	 * add todo
+	 */
+	@PostMapping("/Todo/{userId}")
+	public Todo addTodo(@PathVariable int userId,@RequestBody Todo todo, HttpServletResponse response) {
 		
+		todo.setUserId(userId);
 		Todo createdTodo = todoRepo.save(todo);
 		
 		if(createdTodo != null)
@@ -47,12 +56,27 @@ public class CRUD {
 		return createdTodo;
 	}
 	
-//	@PostMapping("/Todo/{userId}/{id}")
-//	public Todo updateTodo(@PathVariable(name = "userId") int userId, Long id) {
-//		Todo changeTodo = todoRepo.find;
-//		changeTodo.setComplete(!changeTodo.isComplete());
-//		
-//		return todoRepo.save(changeTodo);
-//	}
+	/*
+	 * change iscomplete for todo
+	 */
+	@Transactional
+	@PostMapping("/Todo/{userId}/{id}")
+	public void changeCompleteTodo(@PathVariable(name= "userId") int userId,
+			@PathVariable(name = "id") Long id,
+			@RequestParam(name = "isComplete") boolean tf,
+			HttpServletResponse response) {
+		
+		todoRepo.changeComplete(tf,userId,id);
+		response.setStatus(HttpServletResponse.SC_NO_CONTENT);
+	}
+	
+	@Transactional
+	@DeleteMapping("/Todo/{userId}/{id}")
+	public void deleteTodo(@PathVariable int userId, 
+			@PathVariable Long id) {
+		
+		todoRepo.deleteByIdAndUserId(userId, id);
+		
+	}
 
 }
