@@ -34,7 +34,6 @@ public class CRUD {
 	/*
 	 * get all todos for specifc user
 	 */
-	@CrossOrigin(origins = "http://localhost:3000")
 	@GetMapping("/Todo/{userId}")
 	public List<Todo> getAllTodos(@PathVariable(name = "userId") int userId) {
 		return todoRepo.findByUserId(userId);

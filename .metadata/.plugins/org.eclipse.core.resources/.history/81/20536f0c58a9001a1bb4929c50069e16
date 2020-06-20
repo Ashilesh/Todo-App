@@ -1,8 +1,0 @@
-package io.sonkusle.TodoApp.Entity;
-
-import org.springframework.boot.autoconfigure.domain.EntityScan;
-
-@EntitySca
-public class User {
-
-}
