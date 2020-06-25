@@ -67,7 +67,7 @@ public class CRUD {
 	@PostMapping("/Todo/{userId}/{id}")
 	public void changeCompleteTodo(@PathVariable(name= "userId") int userId,
 			@PathVariable(name = "id") Long id,
-			@RequestParam(name = "isComplete") boolean tf,
+			@RequestParam(name = "complete") boolean tf,
 			HttpServletResponse response) {
 		
 		todoRepo.changeComplete(tf,userId,id);

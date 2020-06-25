@@ -62,7 +62,6 @@ public class CRUD {
 	/*
 	 * change iscomplete for todo
 	 */
-	@CrossOrigin(origins = "http://localhost:3000")
 	@Transactional
 	@PostMapping("/Todo/{userId}/{id}")
 	public void changeCompleteTodo(@PathVariable(name= "userId") int userId,
@@ -74,9 +73,8 @@ public class CRUD {
 		response.setStatus(HttpServletResponse.SC_NO_CONTENT);
 	}
 	
-	
-	@Transactional
 	@CrossOrigin(origins = "http://localhost:3000")
+	@Transactional
 	@DeleteMapping("/Todo/{userId}/{id}")
 	public void deleteTodo(@PathVariable int userId, 
 			@PathVariable Long id) {

@@ -62,7 +62,6 @@ public class CRUD {
 	/*
 	 * change iscomplete for todo
 	 */
-	@CrossOrigin(origins = "http://localhost:3000")
 	@Transactional
 	@PostMapping("/Todo/{userId}/{id}")
 	public void changeCompleteTodo(@PathVariable(name= "userId") int userId,

@@ -7,8 +7,7 @@ class App extends React.Component {
     super(props);
     this.state = {
       newItem: "",
-      list: [],
-      temp: null
+      list: []
     };
     this.getList();
   }
@@ -35,25 +34,31 @@ class App extends React.Component {
     console.log(array);
 
     this.setState({
-      list : array
+      list: array.reverse()
     });
-    
+
+  }
+
+  async changeItem(item) {
+
+    const response = await fetch(
+      "http://localhost:8080/Todo/1/" + item.id + "?isComplete=" + !item.isComplete
+      , {
+        method: "POST",
+        headers: { 'Content-Type': 'application/json' }
+      });
+
+    if (response.status === 200) {
+      return true;
+    }
+
+    return false;
   }
 
   async addItem(todoValue) {
 
 
     if (todoValue !== "") {
-
-      // append all items in list
-      // const list = [...this.state.list]
-
-      // list.push(newItem);
-
-      // this.setState({
-      //   list: list,
-      //   newItem: ""
-      // });
 
       const send = {
         title: todoValue
@@ -68,33 +73,37 @@ class App extends React.Component {
       // if created then add into list
       if (response["status"] === 201) {
         const data = await response.json();
-        this.setState({
-          temp: data
-        });
 
         console.log(data);
 
         const tempList = this.state.list;
-        (await tempList).push(this.state.temp);
+        tempList.unshift(data);
 
         this.setState({
           list: tempList,
-          temp: null,
           newItem: ""
         });
-
-        
       }
 
     }
   }
 
-  deleteItem(id) {
-    const list = [...this.state.list];
-    const updatedList = list.filter(item => item.id !== id);
-    this.setState({
-      list: updatedList
-    })
+  async deleteItem(id) {
+    const response = await fetch(`http://localhost:8080/Todo/1/${id}`, {
+      method: "DELETE",
+      headers: { 'Content-Type': 'application/json' }
+    });
+
+    if (response.status === 200) {
+      const list = [...this.state.list];
+      const updatedList = list.filter(item => item.id !== id);
+      this.setState({
+        list: updatedList
+      });
+    }
+
+
+
   }
 
   updateInput(input) {
@@ -128,15 +137,23 @@ class App extends React.Component {
           <br />
           <div className="list">
             <ul>
-              
+
               {this.state.list.map(item => {
                 return (
                   <li key={item.id}>
                     <input
                       type="checkbox"
                       name="idDone"
-                      checked={item.isComplete}
-                      onChange={() => { }}
+                      defaultChecked={item.isComplete}
+                      onChange={e => {
+                        if (this.changeItem(item)) {
+                          console.log(item.isComplete)
+                          item.isComplete = !item.isComplete;
+                          // console.log(item.isComplete)
+                          e.target.checked = item.isComplete;
+                        }
+
+                      }}
                     />
                     {item.title}
                     <button
@@ -145,17 +162,13 @@ class App extends React.Component {
                     >Delete</button>
                   </li>
                 );
-              })}  
-              <li>
-                <input type="checkbox" />
-                  Todo 1
-                  <button className="btn">Delete</button>
-              </li>
+              })}
+              
             </ul>
           </div>
         </div>
       </div>
-    )
+    );
   }
 }
 
